@@ -16,6 +16,37 @@ from dataclasses import dataclass, field
 from urllib.parse import urlparse
 import requests
 
+import os
+import requests
+
+
+def send_telegram_message(message):
+
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    if not bot_token or not chat_id:
+        print("Telegram credentials are missing!")
+        return
+
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+
+    payload = {
+        "chat_id": chat_id,
+        "text": message
+    }
+
+    response = requests.post(
+        url,
+        json=payload,
+        timeout=15
+    )
+
+    response.raise_for_status()
+
+    print("Telegram notification sent!")
+
+
 # ──────────────────────────────────────────────────────────────────────
 # CONFIGURATION — edit these or set via env vars
 # ──────────────────────────────────────────────────────────────────────
@@ -623,3 +654,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+if __name__ == "__main__":
+    send_telegram_message(
+        "Hello! Chennai Movie Alert Bot is working!"
+    )
